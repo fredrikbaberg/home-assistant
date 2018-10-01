@@ -45,15 +45,15 @@ async def websocket_list(hass, connection, msg):
     """Return a list of users."""
     result = [_user_info(u) for u in await hass.auth.async_get_users()]
 
-        connection.send_message(
-            websocket_api.result_message(msg['id'], result))
+    connection.send_message(
+        websocket_api.result_message(msg['id'], result))
 
 
 @websocket_api.require_owner
 @websocket_api.async_response
 async def websocket_delete(hass, connection, msg):
     """Delete a user."""
-    if msg['user_id'] == connection.request.get('hass_user').id:
+    if msg['user_id'] == connection.user.id:
         connection.send_message(websocket_api.error_message(
             msg['id'], 'no_delete_self',
             'Unable to delete your own account'))
