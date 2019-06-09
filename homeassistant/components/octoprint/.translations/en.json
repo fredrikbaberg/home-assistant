@@ -1,0 +1,29 @@
+{
+  "config": {
+    "title": "OctoPrint",
+    "host": "Host",
+    "key": "Key",
+    "api_key": "API Key",
+    "port": "Port",
+    "step": {
+      "user": {
+        "title": "Configure OctoPrint",
+        "data": {
+          "name": "Name",
+          "host": "Host",
+          "port": "Port",
+          "api_key": "API Key",
+          "ssl": "SSL"
+        }
+      },
+      "confirm": {
+        "title": "OctoPrint",
+        "description": "Do you want to set up OctoPrint?"
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single configuration of OctoPrint is possible.",
+      "no_devices_found": "No OctoPrint devices found on the network."
+    }
+  }
+}
