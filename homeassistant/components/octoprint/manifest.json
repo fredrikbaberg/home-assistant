@@ -1,8 +1,10 @@
 {
   "domain": "octoprint",
   "name": "Octoprint",
+  "config_flow": true,
   "documentation": "https://www.home-assistant.io/components/octoprint",
   "requirements": [],
   "dependencies": [],
+  "zeroconf": ["_octoprint._tcp.local."],
   "codeowners": []
 }

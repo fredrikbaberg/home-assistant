@@ -19,6 +19,9 @@ ZEROCONF = {
     ],
     "_hap._tcp.local.": [
         "homekit_controller"
+    ],
+    "_octoprint._tcp.local.": [
+        "octoprint"
     ]
 }
 

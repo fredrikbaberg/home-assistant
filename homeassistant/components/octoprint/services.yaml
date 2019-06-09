@@ -1,0 +1,9 @@
+do_something:
+    description: Do something.
+    fields:
+        entity_id:
+            description: Name(s) of the entitites to set
+            example: 'printer.101hero'
+        speed:
+            description: Speed setting
+            example: 'low'

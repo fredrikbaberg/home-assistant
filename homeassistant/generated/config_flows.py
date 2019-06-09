@@ -36,6 +36,7 @@ FLOWS = [
     "mobile_app",
     "mqtt",
     "nest",
+    "octoprint",
     "openuv",
     "owntracks",
     "plaato",
