@@ -2,15 +2,12 @@ import requests
 #import asyncio
 import time
 
-#import stomper
-#import websockets
-
 class OctoPrint():
     def __init__(self, host, port):
         self.base_url = 'http://{}:{}'.format(host, port)
         self.headers = {}
         self.api_key = ''
-        self._connected = False
+        self.connected = False
         
     def _set_api_key(self, key):
         """ Set API key and header internally. """
@@ -61,7 +58,7 @@ class OctoPrint():
                     time.sleep(1.0)
                     if response.status_code == 200:
                         self._set_api_key(response.json()['api_key'])
-                        self._connected = True
+                        self.connected = True
                         return True
         return False
 
@@ -79,7 +76,7 @@ class OctoPrint():
             )
             if response.status_code == 204:
                 # Successfully removed API key.
-                self._connected = False
+                self.connected = False
                 return True
         except requests.exceptions.ConnectionError:
             print("Could not connect.")
@@ -151,7 +148,7 @@ class OctoPrint():
         
     def pause_print(self):
         """ Pause print """
-        if self._connected:
+        if self.connected:
             try:
                 return requests.post(
                     url=self.base_url+'/api/job',
@@ -169,7 +166,7 @@ class OctoPrint():
 
     def resume_print(self):
         """ Resume print """
-        if self._connected:
+        if self.connected:
             try:
                 return requests.post(
                     url=self.base_url+'/api/job',

@@ -1,10 +1,6 @@
 {
   "config": {
-    "title": "OctoPrint",
-    "host": "Host",
-    "key": "Key",
-    "api_key": "API Key",
-    "port": "Port",
+    "title": "OctoPrint instance",
     "step": {
       "user": {
         "title": "Configure OctoPrint",
@@ -23,7 +19,10 @@
     },
     "abort": {
       "single_instance_allowed": "Only a single configuration of OctoPrint is possible.",
-      "no_devices_found": "No OctoPrint devices found on the network."
+      "no_devices_found": "No OctoPrint devices found on the network.",
+      "connection_error": "Could not connect to device"
+    },
+    "error": {
     }
   }
 }
