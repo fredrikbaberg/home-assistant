@@ -113,17 +113,18 @@ class OctoPrintFlowHandler(config_entries.ConfigFlow):
             return self.async_show_form(
                step_id='confirm'
             )
-        return await self._create_entry()
+        return await self._create_entry(info)
 
-    async def _create_entry(self):
+    async def _create_entry(self, info):
         """Create entry for device.
         """
-        _LOGGER.debug("Create entry")
+        _LOGGER.debug("Create entry \n%s", info)
         data = {
             CONF_NAME: "dev.local",
             CONF_URL: "http{}://{}:{}".format("", "", ""),
             CONF_HOST: "172.17.0.1",
-            CONF_PORT: 5000
+            CONF_PORT: 5000,
+            CONF_API_KEY: "85ee2a2d628fceec9da7e088baf1ea96"
         }
         title = "{} - {}".format("OctoPrint", "5000")
         return self.async_create_entry(
