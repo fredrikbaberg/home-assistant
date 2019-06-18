@@ -16,6 +16,8 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.util import slugify as util_slugify
 
+from .octoprint import OctoPrint
+
 _LOGGER = logging.getLogger(__name__)
 
 CONF_BED = 'bed'
@@ -135,6 +137,46 @@ def setup(hass, config):
         success = True
 
     return success
+
+async def async_setup_entry(hass, config_entry):
+    """Setup the OctoPrint component."""
+    if DOMAIN not in hass.data:
+        hass.data[DOMAIN] = {}
+    if not config_entry.options:
+        await async_populate_options(hass, config_entry)
+        
+    device = OctoPrint(config_entry.data[CONF_HOST], config_entry.data[CONF_PORT])
+    
+    hass.data[DOMAIN][device.base_url] = device
+    #await device.async_update_device_registry()
+    #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, device.shutdown)
+    return True
+    
+async def async_unload_entry(hass, config_entry):
+    """Unload Axis device config entry."""
+    _LOGGER.info("Unload entry:\n%s", config_entry.data)
+    device = hass.data[DOMAIN].pop(config_entry.data[CONF_MAC])
+    return await device.deregister()
+    
+async def async_populate_options(hass, config_entry):
+    """Populate default options for device."""
+    from .octoprint import OctoPrint
+    _LOGGER.info("Populate Options:\n%s", config_entry.data)
+    device = OctoPrint(config_entry.data[CONF_HOST], config_entry.data[CONF_PORT])
+    #device = await get_device(hass, config_entry.data[CONF_DEVICE])
+
+    #supported_formats = device.vapix.params.image_format
+    #camera = bool(supported_formats)
+
+    options = {
+        #CONF_CAMERA: camera,
+        #CONF_EVENTS: True,
+        #CONF_TRIGGER_TIME: DEFAULT_TRIGGER_TIME
+    }
+
+    hass.config_entries.async_update_entry(config_entry, options=options)
+    
+    return device
 
 
 class OctoPrintAPI:
