@@ -2,18 +2,17 @@
 import logging
 import time
 
+from aiohttp.hdrs import CONTENT_TYPE
 import requests
 import voluptuous as vol
-from aiohttp.hdrs import CONTENT_TYPE
 
 from homeassistant.components.discovery import SERVICE_OCTOPRINT
 from homeassistant.const import (
-    CONF_API_KEY, CONF_HOST, CONTENT_TYPE_JSON, CONF_NAME, CONF_PATH,
-    CONF_PORT, CONF_SSL, TEMP_CELSIUS, CONF_MONITORED_CONDITIONS, CONF_SENSORS,
-    CONF_BINARY_SENSORS)
-from homeassistant.helpers import discovery
+    CONF_API_KEY, CONF_BINARY_SENSORS, CONF_HOST, CONF_MONITORED_CONDITIONS,
+    CONF_NAME, CONF_PATH, CONF_PORT, CONF_SENSORS, CONF_SSL, CONTENT_TYPE_JSON,
+    TEMP_CELSIUS)
+from homeassistant.helpers import device_registry as dr, discovery
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.util import slugify as util_slugify
 
@@ -115,14 +114,17 @@ async def async_setup_entry(hass, config_entry):
         model='1.0.0',
         sw_version='0.0.1'
     )
+    hass.data[DOMAIN] = {}
+    hass.data[DOMAIN]['config'] = OctoPrint(config_entry.data[CONF_HOST], config_entry.data[CONF_PORT])
+    hass.data[DOMAIN]['config']._set_api_key(config_entry.data[CONF_API_KEY])
     hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, 'binary_sensor'))
-    hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, 'sensor'))
+    #hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, 'sensor'))
     return True
     
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
     hass.async_create_task(hass.config_entries.async_forward_entry_unload(config_entry, 'binary_sensor'))
-    hass.async_create_task(hass.config_entries.async_forward_entry_unload(config_entry, 'sensor'))
+    #hass.async_create_task(hass.config_entries.async_forward_entry_unload(config_entry, 'sensor'))
     #bridge = hass.data[DOMAIN].pop(entry.data['host'])
     #return await bridge.async_reset()
     _LOGGER.info("Unload entry\n%s", config_entry.data)

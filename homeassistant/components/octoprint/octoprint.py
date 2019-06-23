@@ -1,6 +1,8 @@
-import requests
 #import asyncio
 import time
+
+import requests
+
 
 class OctoPrint():
     def __init__(self, host, port):

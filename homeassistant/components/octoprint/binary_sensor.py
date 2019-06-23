@@ -1,35 +1,44 @@
 """Support for monitoring OctoPrint binary sensors."""
 import logging
+import time
 
 import requests
 
+from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.core import callback
 
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from .octoprint import OctoPrint
 
-from . import BINARY_SENSOR_TYPES, DOMAIN as COMPONENT_DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
-
+from . import BINARY_SENSOR_TYPES, DOMAIN as COMPONENT_DOMAIN, _LOGGER
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    _LOGGER.debug("Setup binary_sensor:\n%s", config_entry.data)
-    devices = [OctoPrintBinarySensor('bin1'), OctoPrintBinarySensor('bin2')]
-    async_add_entities(devices)
+    """Set up OctoPrint binary sensor from a config entry."""
+    devices = [OctoPrintBinarySensor('bin1', hass.data[COMPONENT_DOMAIN]['config'])]
+    async_add_entities(devices, update_before_add=True)
+    return True
     
 async def async_remove_entry(hass, entry) -> None:
     """Handle removal of an entry."""
     _LOGGER.info("Remove binary_sensor\n%s", entry)
     
 class OctoPrintBinarySensor(BinarySensorDevice):
-    def __init__(self, name):
+    """Representation an OctoPrint binary sensor."""
+    def __init__(self, name, api):
+        """Initialize a new OctoPrint sensor."""
         self._is_on = False
         self._name = name
+        self._available = True
+        self._api = api
     
     @property
     def name(self):
         """Name of the device."""
         return self._name
+        
+    @property
+    def available(self):
+        """Device available."""
+        return self._available
 
     @property
     def is_on(self):
@@ -48,23 +57,10 @@ class OctoPrintBinarySensor(BinarySensorDevice):
             'via_device': (DOMAIN, '101hero')
         }
 
-    def turn_on(self, **kwargs):
-        """Turn the switch on."""
-        self._is_on = True
-
-    def turn_off(self, **kwargs):
-        """Turn the switch off."""
-        self._is_on = False
-        
-    @callback
-    def update_callback(self, no_delay=False):
-        """Update the sensor's state, if needed.
-
-        Parameter no_delay is True when device_event_reachable is sent.
-        """
-        _LOGGER.info("Update callback")
-        self.async_schedule_update_ha_state()
-        return
+    async def async_update(self):
+        """Update data."""
+        _LOGGER.debug("Async update: %s", self._api.api_key)
+        return True
 
 # def setup_platform(hass, config, add_entities, discovery_info=None):
 #     """Set up the available OctoPrint binary sensors."""

@@ -4,8 +4,8 @@ import logging
 import requests
 
 from homeassistant.const import TEMP_CELSIUS
-from homeassistant.helpers.entity import Entity
 from homeassistant.core import callback
+from homeassistant.helpers.entity import Entity
 
 from . import DOMAIN as COMPONENT_DOMAIN, SENSOR_TYPES
 
